@@ -21,8 +21,8 @@ Create new task
 POST /tasks
 {
 	"title": "Get milk for coffe",
-	"description": "Foo bar",
-	"expiry": "1970-01-01T00:00:00+01:00"
+	"description": "Some of my guests don't like black coffe.",
+	"expires": "1970-01-01T00:00:00+01:00"
 }
 ```
 
@@ -33,7 +33,7 @@ PUT /tasks/{ID}
 	"completed": true,
 	"title": "Updated title",
 	"description": "Updated description",
-	"expiry": "2019-01-01T00:00:00+01:00"
+	"expires": "2019-01-01T00:00:00+01:00"
 }
 ```
 
@@ -47,12 +47,11 @@ DELETE /tasks/{ID}
 **Tasks**
 ```json
 {
-	"id": "UUID...",
 	"completed": false,
 	"title": "Get milk for coffe",
 	"description": "Foo bar",
 	"created": "1970-01-01T00:00:00+01:00",
 	"updated": "1970-01-01T00:00:00+01:00",
-	"expiry": "1970-01-01T00:00:00+01:00"
+	"expires": "1970-01-01T00:00:00+01:00"
 }
 ```
