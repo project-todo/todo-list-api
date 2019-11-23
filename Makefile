@@ -3,7 +3,9 @@ TARGET    := server
 TARGETDIR := bin
 ENV       := GOOS=linux
 
-all: vet test
+all: vet test build ;
+
+build:
 	$(ENV) go build -o $(TARGETDIR)/$(TARGET) $(LDFLAGS) $(PACKAGE)/cmd/$(TARGET)
 
 vet:
