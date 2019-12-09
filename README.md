@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/project-todo/todo-list-api)](https://goreportcard.com/report/github.com/project-todo/todo-list-api)
+
 # todo-list-api
 CRUD API for TODO lists
 
