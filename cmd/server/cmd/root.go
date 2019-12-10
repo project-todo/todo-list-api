@@ -3,11 +3,17 @@ package cmd
 import (
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/project-todo/todo-list-api/pkg/api/task"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
+)
+
+// Command flags.
+var (
+	fPort uint16
 )
 
 var rootCmd = &cobra.Command{
@@ -22,8 +28,12 @@ var rootCmd = &cobra.Command{
 		r.HandleFunc("/tasks/{id}", taskHandler.GetTask).Methods("GET")
 
 		http.Handle("/", r)
-		http.ListenAndServe(":8080", nil)
+		http.ListenAndServe(":" + strconv.Itoa(int(fPort)), nil)
 	},
+}
+
+func init() {
+	rootCmd.Flags().Uint16VarP(&fPort, "port", "p", 8080, "port to listen")
 }
 
 // Execute runs root command.
