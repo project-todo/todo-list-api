@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-// MemoryRepository TODO
-type MemoryRepository struct {
+// repository TODO
+type repository struct {
 	Repository
 	sync.Mutex
 	tasks   map[uint64]Task
@@ -14,15 +14,25 @@ type MemoryRepository struct {
 }
 
 // NewMemoryRepository TODO
-func NewMemoryRepository() MemoryRepository {
-	return MemoryRepository{
+func NewMemoryRepository() Repository {
+	return &repository{
 		tasks:   make(map[uint64]Task),
 		counter: 0,
 	}
 }
 
+func (m *repository) FindAll() []Task {
+	defer m.Unlock()
+	m.Lock()
+	tasks := make([]Task, len(m.tasks))
+	for _, task := range m.tasks {
+		tasks = append(tasks, task)
+	}
+	return tasks
+}
+
 // Find TODO
-func (m *MemoryRepository) Find(id uint64) *Task {
+func (m *repository) Find(id uint64) *Task {
 	defer m.Unlock()
 	m.Lock()
 	task, ok := m.tasks[id]
@@ -33,7 +43,7 @@ func (m *MemoryRepository) Find(id uint64) *Task {
 }
 
 // Create TODO
-func (m *MemoryRepository) Create(task Task) (*Task, error) {
+func (m *repository) Create(task Task) (*Task, error) {
 	defer m.Unlock()
 	m.Lock()
 	task.ID = m.counter
@@ -43,7 +53,7 @@ func (m *MemoryRepository) Create(task Task) (*Task, error) {
 }
 
 // Update TODO
-func (m *MemoryRepository) Update(task Task) error {
+func (m *repository) Update(task Task) error {
 	defer m.Unlock()
 	m.Lock()
 	_, ok := m.tasks[task.ID]
@@ -55,7 +65,7 @@ func (m *MemoryRepository) Update(task Task) error {
 }
 
 // Delete TODO
-func (m *MemoryRepository) Delete(id uint64) error {
+func (m *repository) Delete(id uint64) error {
 	defer m.Unlock()
 	m.Lock()
 	_, ok := m.tasks[id]

@@ -5,9 +5,8 @@ import (
 )
 
 func TestMemoryRepository(t *testing.T) {
-	repository := NewMemoryRepository()
 	repositoryTest := RepositoryTest{
-		repository: &repository,
+		repository: NewMemoryRepository(),
 	}
 	repositoryTest.TestAll(t)
 }

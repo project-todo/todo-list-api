@@ -31,7 +31,7 @@ Update existing task
 PUT /tasks/{ID}
 {
 	"completed": true,
-	"description": "Updated description",
+	"description": "Updated description"
 }
 ```
 

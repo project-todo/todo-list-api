@@ -9,13 +9,15 @@ type RepositoryTest struct {
 }
 
 func (rt RepositoryTest) TestAll(t *testing.T) {
+	t.Run("Find all task with no task existing", rt.testFindAllNoTasksExist)
+	t.Run("Find all task with one task existing", rt.testFindAllTasksOneTaskExist)
 	t.Run("Create a task", rt.testCreateTask)
-	t.Run("Find a task", rt.testFindTask)
-	t.Run("Try to find a task that does not exist", rt.testFindTaskThatDoesNotExist)
-	t.Run("Update a task", rt.testUpdateTaskThatExist)
-	t.Run("Try to update a task that does not exist", rt.testUpdateTaskThatDoesNotExist)
-	t.Run("Delete a task", rt.testDeleteOnTaskThatExist)
-	t.Run("Try to delete a task that does not exist", rt.testUpdateTaskThatDoesNotExist)
+	t.Run("Find a task that exist", rt.testFindTaskThatExist)
+	t.Run("Find a task that does not exist", rt.testFindTaskThatDoNotExist)
+	t.Run("Update a task that exist", rt.testUpdateTaskThatExist)
+	t.Run("Update a task that does not exist", rt.testUpdateTaskThatDoNotExist)
+	t.Run("Delete a task that exist", rt.testDeleteOnTaskThatExist)
+	t.Run("Delete a task that does not exist", rt.testUpdateTaskThatDoNotExist)
 }
 
 func (rt RepositoryTest) testCreateTask(t *testing.T) {
@@ -31,15 +33,11 @@ func (rt RepositoryTest) testCreateTask(t *testing.T) {
 		t.Errorf("Expected error to be nil")
 	}
 
-	if createdTask.ID != 0 {
-		t.Errorf("Expected 0 but got %d", createdTask.ID)
-	}
-
 	assertCompletedIsEqual(t, &task, createdTask)
 	assertDescriptionIsEqual(t, &task, createdTask)
 }
 
-func (rt RepositoryTest) testFindTask(t *testing.T) {
+func (rt RepositoryTest) testFindTaskThatExist(t *testing.T) {
 	task, _ := rt.repository.Create(Task{})
 
 	foundTask := rt.repository.Find(task.ID)
@@ -50,10 +48,35 @@ func (rt RepositoryTest) testFindTask(t *testing.T) {
 	assertTaskIsEqual(t, task, foundTask)
 }
 
-func (rt RepositoryTest) testFindTaskThatDoesNotExist(t *testing.T) {
+func (rt RepositoryTest) testFindTaskThatDoNotExist(t *testing.T) {
 	foundTask := rt.repository.Find(1000)
 	if foundTask != nil {
 		t.Errorf("Expected foundTask not to be nil, but was.")
+	}
+}
+
+func (rt RepositoryTest) testFindAllNoTasksExist(t *testing.T) {
+	foundTasks := rt.repository.FindAll()
+	if foundTasks == nil {
+		t.Error("Expected foundTasks not to be nil")
+	}
+
+	nrOfTasks := len(foundTasks)
+	if nrOfTasks != 0 {
+		t.Errorf("Expected number of tasks to be 0, but was %d", nrOfTasks)
+	}
+}
+
+func (rt RepositoryTest) testFindAllTasksOneTaskExist(t *testing.T) {
+	rt.repository.Create(Task{})
+	foundTasks := rt.repository.FindAll()
+	if foundTasks == nil {
+		t.Error("Expected foundTasks not to be nil")
+	}
+
+	nrOfTasks := len(foundTasks)
+	if nrOfTasks != 2 {
+		t.Errorf("Expected number of tasks to be 1, but was %d", nrOfTasks)
 	}
 }
 
@@ -72,7 +95,7 @@ func (rt RepositoryTest) testUpdateTaskThatExist(t *testing.T) {
 	assertTaskIsEqual(t, task, foundTask)
 }
 
-func (rt RepositoryTest) testUpdateTaskThatDoesNotExist(t *testing.T) {
+func (rt RepositoryTest) testUpdateTaskThatDoNotExist(t *testing.T) {
 	task := Task{
 		ID:          1000,
 		Completed:   true,
@@ -97,7 +120,7 @@ func (rt RepositoryTest) testDeleteOnTaskThatExist(t *testing.T) {
 	}
 }
 
-func (rt RepositoryTest) testDeleteOnTaskThatDoesNotExist(t *testing.T) {
+func (rt RepositoryTest) testDeleteOnTaskThatDoNotExist(t *testing.T) {
 	err := rt.repository.Delete(1234567)
 	if err == nil {
 		t.Error("Expected delete to return error, but was nil")
